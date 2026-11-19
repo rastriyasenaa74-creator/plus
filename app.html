@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard | PLUS MEDISTOCK</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.dash-layout{min-height:100vh;display:grid;grid-template-columns:255px 1fr;background:#f5f7fb}
+.dash-side{background:#102b4c;color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.dash-side .brand{color:#fff;margin-bottom:22px}.dash-group{font-size:11px;letter-spacing:1px;color:#a9bdd6;padding:14px 12px 7px}
+.dash-link{display:flex;gap:11px;padding:11px 12px;border-radius:9px;color:#dce7f5;margin:3px 0;font-size:14px;cursor:pointer}
+.dash-link:hover,.dash-link.active{background:#315cff;color:#fff}
+.dash-main{min-width:0}.dash-top{height:72px;background:#fff;border-bottom:1px solid #e1e8f3;display:flex;align-items:center;justify-content:space-between;padding:0 26px;position:sticky;top:0;z-index:3}
+.dash-content{max-width:1450px;margin:28px auto;padding:0 26px 40px}.dash-page{display:none}.dash-page.active{display:block}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:15px;margin:20px 0}
+.dash-stat,.dash-card{background:#fff;border:1px solid #e1e8f3;border-radius:15px;padding:19px;box-shadow:0 7px 22px #142d5009;margin-bottom:17px}
+.dash-stat span{display:block;color:#687991;font-size:13px}.dash-stat strong{font-size:28px;color:#17365f}
+.dash-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;align-items:end}
+.dash-form input,.dash-form select{width:100%;box-sizing:border-box}.dash-table{width:100%;border-collapse:collapse;min-width:620px}.dash-table th,.dash-table td{text-align:left;padding:11px;border-bottom:1px solid #e8edf5;font-size:13px}.dash-table th{background:#f7f9fc;color:#52647d}
+.dash-overflow{overflow:auto}.dash-msg{display:none;padding:12px 14px;background:#eef4ff;color:#2448bc;border-radius:9px;margin:12px 0}.dash-msg.show{display:block}
+.dash-actions{display:flex;gap:8px;flex-wrap:wrap}.dash-btn{border:0;border-radius:9px;padding:10px 14px;background:#315cff;color:#fff;cursor:pointer;font-weight:600}.dash-btn.secondary{background:#eaf0ff;color:#2448bc}.dash-btn.danger{background:#b42318}
+.dash-muted{color:#687991}.dash-empty{text-align:center;padding:20px;color:#687991}.dash-page h1{margin:0 0 5px}.dash-page h2{margin:0 0 15px}
+@media(max-width:850px){.dash-layout{grid-template-columns:1fr}.dash-side{position:fixed;left:-270px;width:255px;z-index:9;transition:left .2s}.dash-side.open{left:0}.dash-top{padding:0 14px}.dash-content{padding:0 13px 30px;margin:20px auto}}
+@media print{.dash-side,.dash-top,.no-print{display:none!important}.dash-layout{display:block}.dash-content{margin:0;padding:0}}
+</style>
+</head>
+<body>
+<main class="dash-layout">
+<aside class="dash-side" id="side">
+<a class="brand footer-brand" href="?page=home"><span class="brand-mark">PM</span><span>PLUS MEDISTOCK</span></a>
+<div class="dash-group">WORKSPACE</div>
+<a class="dash-link active" data-page="overview">▦ Dashboard</a>
+<a class="dash-link" data-page="medicals" data-admin>▤ Medical Stores</a>
+<a class="dash-link" data-page="users" data-admin>♙ Store Users</a>
+<a class="dash-link" data-page="medicines">✚ Medicines</a>
+<a class="dash-link" data-page="customers">♧ Customers</a>
+<a class="dash-link" data-page="suppliers">♧ Suppliers</a>
+<div class="dash-group">TRANSACTIONS</div>
+<a class="dash-link" data-page="purchases">⇩ Purchases</a>
+<a class="dash-link" data-page="billing">▣ Create Bill</a>
+<a class="dash-link" data-page="invoices">▤ All Bills</a>
+<a class="dash-link" data-page="returns">↩ Sales Return</a>
+<div class="dash-group">REPORTS & SETTINGS</div>
+<a class="dash-link" data-page="stock">▥ Stock Report</a>
+<a class="dash-link" data-page="expiry">◷ Expiry Report</a>
+<a class="dash-link" data-page="reports">▤ Reports</a>
+<a class="dash-link" data-page="settings">⚙ Settings</a>
+<a class="dash-link" href="?page=home">↩ Back to website</a>
+</aside>
+<section class="dash-main">
+<header class="dash-top">
+<div class="dash-actions"><button class="dash-btn secondary" id="menuBtn">☰</button><b>PLUS MEDISTOCK</b></div>
+<div class="dash-actions"><span class="dash-muted" id="welcome">Loading account...</span><button class="dash-btn danger" id="logout">Logout</button></div>
+</header>
+<div class="dash-content">
+<div id="msg" class="dash-msg" role="status"></div>
+<section class="dash-page active" id="page-overview"><h1>Dashboard</h1><p class="dash-muted">Medical store overview and quick actions.</p><div class="dash-grid" id="stats"></div><div class="dash-card"><h2>Quick Actions</h2><div class="dash-actions"><button class="dash-btn" data-go="billing">＋ Create Bill</button><button class="dash-btn secondary" data-go="medicines">Add Medicine</button><button class="dash-btn secondary" data-go="purchases">Purchase Entry</button><button class="dash-btn secondary" data-go="invoices">All Bills</button></div></div></section>
+
+<section class="dash-page" id="page-medicals" data-admin><h1>Medical Stores</h1><div class="dash-card"><h2>Register Medical Store</h2><form id="medicalForm" class="dash-form">
+<div class="field"><label>Medical store name *</label><input name="medical_name" required></div><div class="field"><label>Owner name</label><input name="owner_name"></div><div class="field"><label>Mobile</label><input name="mobile"></div><div class="field"><label>Email</label><input name="email" type="email"></div><div class="field"><label>Address</label><input name="address"></div><div class="field"><label>GSTIN</label><input name="gstin"></div><div class="field"><label>Drug licence</label><input name="drug_license"></div><button class="dash-btn">Create Medical</button></form></div><div class="dash-card"><h2>Medical Store List</h2><div id="medicalTable"></div></div></section>
+
+<section class="dash-page" id="page-users" data-admin><h1>Store Users</h1><div class="dash-card"><h2>Create Store Login</h2><p class="dash-muted">Create Owner/Staff login for an existing Medical ID.</p><form id="userForm" class="dash-form"><div class="field"><label>Medical ID *</label><input name="medical_id" required></div><div class="field"><label>Name *</label><input name="name" required></div><div class="field"><label>Email *</label><input name="email" type="email" required></div><div class="field"><label>Password (min 8) *</label><input name="password" type="password" minlength="8" required></div><div class="field"><label>Mobile</label><input name="mobile"></div><div class="field"><label>Role</label><select name="role"><option>OWNER</option><option>STAFF</option></select></div><button class="dash-btn">Create Login</button></form></div></section>
+
+<section class="dash-page" id="page-medicines"><h1>Medicines</h1><div class="dash-card"><h2>Add Medicine</h2><form id="medicineForm" class="dash-form"><div class="field"><label>Medicine name *</label><input name="name" required></div><div class="field"><label>Salt</label><input name="salt"></div><div class="field"><label>Company</label><input name="company"></div><div class="field"><label>Batch</label><input name="batch"></div><div class="field"><label>Expiry</label><input name="expiry" type="date"></div><div class="field"><label>Purchase rate</label><input name="purchase_rate" type="number" min="0" step=".01"></div><div class="field"><label>Sale rate</label><input name="sale_rate" type="number" min="0" step=".01"></div><div class="field"><label>MRP</label><input name="mrp" type="number" min="0" step=".01"></div><div class="field"><label>Stock</label><input name="stock" type="number" min="0" value="0"></div><div class="field"><label>Minimum stock</label><input name="min_stock" type="number" min="0" value="0"></div><div class="field"><label>HSN</label><input name="hsn"></div><div class="field"><label>GST %</label><input name="gst_percent" type="number" min="0" step=".01" value="0"></div><button class="dash-btn">Save Medicine</button></form></div><div class="dash-card"><h2>Medicine List</h2><div id="medicineTable"></div></div></section>
+
+<section class="dash-page" id="page-customers"><h1>Customers</h1><div class="dash-card"><h2>Add Customer</h2><form id="customerForm" class="dash-form"><div class="field"><label>Name *</label><input name="name" required></div><div class="field"><label>Mobile</label><input name="mobile"></div><div class="field"><label>Address</label><input name="address"></div><button class="dash-btn">Save Customer</button></form></div><div class="dash-card"><h2>Customer List</h2><div id="customerTable"></div></div></section>
+
+<section class="dash-page" id="page-suppliers"><h1>Suppliers</h1><div class="dash-card"><h2>Add Supplier</h2><form id="supplierForm" class="dash-form"><div class="field"><label>Name *</label><input name="name" required></div><div class="field"><label>Mobile</label><input name="mobile"></div><div class="field"><label>Address</label><input name="address"></div><div class="field"><label>GSTIN</label><input name="gstin"></div><button class="dash-btn">Save Supplier</button></form></div><div class="dash-card"><h2>Supplier List</h2><div id="supplierTable"></div></div></section>
+
+<section class="dash-page" id="page-stock"><h1>Stock Report</h1><div class="dash-card"><div id="stockReport"></div></div></section>
+<section class="dash-page" id="page-expiry"><h1>Expiry Report</h1><div class="dash-card"><p class="dash-muted">Expiry report API is not present in the current Code.gs. It must be added before this report can load live data.</p></div></section>
+<section class="dash-page" id="page-purchases"><h1>Purchases</h1><div class="dash-card"><h2>Purchase Entry</h2><p class="dash-muted">Purchase form and stock inward require purchase.create backend logic. Current Code.gs does not yet contain this API.</p></div></section>
+<section class="dash-page" id="page-billing"><h1>Create Bill</h1><div class="dash-card"><h2>New Sales Invoice</h2><p class="dash-muted">Billing interface will be connected after secure sale.create and stock-deduction logic is added to Code.gs. Do not use a front-end-only total as a real invoice.</p><div class="dash-actions"><button class="dash-btn" disabled>Save Bill (Backend required)</button><button class="dash-btn secondary" onclick="window.print()">Print Preview</button></div></div></section>
+<section class="dash-page" id="page-invoices"><h1>All Bills</h1><div class="dash-card"><p class="dash-muted">Invoice list requires sale.list backend API, which is not in the supplied Code.gs.</p></div></section>
+<section class="dash-page" id="page-returns"><h1>Sales Return</h1><div class="dash-card"><p class="dash-muted">Return processing requires server-side invoice validation and stock restoration API. It is not in the supplied Code.gs.</p></div></section>
+<section class="dash-page" id="page-reports"><h1>Reports</h1><div class="dash-card"><p class="dash-muted">Sales, purchase and profit reports will be enabled after transaction APIs are implemented.</p></div></section>
+<section class="dash-page" id="page-settings"><h1>Settings</h1><div class="dash-card"><h2>Account</h2><p id="accountInfo"></p><p class="dash-muted">Store access is controlled by the Apps Script backend.</p></div></section>
+</div></section></main>
+<script>
+(function(){
+ const $=id=>document.getElementById(id);
+ const user=JSON.parse(sessionStorage.getItem('plusmedistock_user')||localStorage.getItem('plusmedistock_user')||'{}');
+ const token=sessionStorage.getItem('plusmedistock_token')||localStorage.getItem('plusmedistock_token')||'';
+ function msg(t){$('msg').textContent=t;$('msg').classList.add('show')}
+ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+ function call(action,payload={}){return new Promise((resolve,reject)=>{if(!google||!google.script||!google.script.run){reject(new Error('Open this app from the deployed Google Apps Script Web App URL.'));return}google.script.run.withSuccessHandler(r=>{if(!r||!r.ok)reject(new Error(r?.message||'API error'));else resolve(r.data)}).withFailureHandler(e=>reject(new Error(e.message||'Server error'))).clientApi(action,{...payload,token})})}
+ function table(rows,cols){if(!rows||!rows.length)return '<div class="dash-empty">No records found.</div>';return '<div class="dash-overflow"><table class="dash-table"><thead><tr>'+cols.map(c=>'<th>'+c.label+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+cols.map(c=>'<td>'+(c.render?c.render(r):esc(r[c.key]))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'}
+ function fd(f){return Object.fromEntries(new FormData(f).entries())}
+ function go(page){document.querySelectorAll('.dash-page').forEach(x=>x.classList.toggle('active',x.id==='page-'+page));document.querySelectorAll('.dash-link[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));$('side').classList.remove('open');if(location.hash!=='#'+page)history.replaceState(null,'','#'+page)}
+ document.querySelectorAll('.dash-link[data-page], [data-go]').forEach(a=>a.addEventListener('click',()=>go(a.dataset.page||a.dataset.go)));
+ $('menuBtn').onclick=()=>$('side').classList.toggle('open');
+ $('welcome').textContent=(user.name||user.email||'Account')+' · '+(user.role||'User');
+ $('accountInfo').textContent=(user.name||'')+' | '+(user.email||'')+' | '+(user.role||'');
+ if(user.role!=='SUPER_ADMIN'){document.querySelectorAll('[data-admin]').forEach(x=>x.style.display='none')}
+ async function loadOverview(){const d=await call('overview');const admin=user.role==='SUPER_ADMIN';const a=admin?[['Total Medicals',d.medical_count],['Active Medicals',d.active_medicals],['Pending Medicals',d.pending_medicals]]:[['Medicines',d.medicine_count],['Customers',d.customer_count],['Low Stock',d.low_stock]];$('stats').innerHTML=a.map(x=>`<div class="dash-stat"><span>${x[0]}</span><strong>${x[1]??0}</strong></div>`).join('')}
+ async function loadMedicals(){const r=await call('medical.list');$('medicalTable').innerHTML=table(r,[{key:'medical_name',label:'Medical Store'},{key:'medical_id',label:'Medical ID'},{key:'created_at',label:'Created'},{key:'status',label:'Status'},{key:'medical_id',label:'Actions',render:x=>`<button class="dash-btn secondary" data-mid="${esc(x.medical_id)}" data-status="ACTIVE">Activate</button> <button class="dash-btn danger" data-mid="${esc(x.medical_id)}" data-status="BLOCKED">Block</button>`}])}
+ async function loadStore(){const [m,c,s,st]=await Promise.all([call('medicine.list'),call('customer.list'),call('supplier.list'),call('report.stock')]);$('medicineTable').innerHTML=table(m,[{key:'name',label:'Medicine'},{key:'salt',label:'Salt'},{key:'batch',label:'Batch'},{key:'expiry',label:'Expiry'},{key:'stock',label:'Stock'},{key:'mrp',label:'MRP'}]);$('customerTable').innerHTML=table(c,[{key:'name',label:'Name'},{key:'mobile',label:'Mobile'},{key:'address',label:'Address'}]);$('supplierTable').innerHTML=table(s,[{key:'name',label:'Name'},{key:'mobile',label:'Mobile'},{key:'gstin',label:'GSTIN'}]);$('stockReport').innerHTML='<p>Total items: <b>'+st.total_items+'</b> · Low stock: <b>'+st.low_stock+'</b></p>'+table(st.items||[],[{key:'name',label:'Medicine'},{key:'batch',label:'Batch'},{key:'stock',label:'Stock'},{key:'min_stock',label:'Minimum'}])}
+ async function refresh(){await loadOverview();if(user.role==='SUPER_ADMIN')await loadMedicals();else await loadStore()}
+ function bindForm(id,action,after){$(id).addEventListener('submit',async e=>{e.preventDefault();try{await call(action,fd(e.target));e.target.reset();if(after)await after();msg('Saved successfully.')}catch(x){msg(x.message)}})}
+ bindForm('medicalForm','medical.create',loadMedicals);
+ bindForm('userForm','medical.createUser');
+ bindForm('medicineForm','medicine.create',loadStore);
+ bindForm('customerForm','customer.create',loadStore);
+ bindForm('supplierForm','supplier.create',loadStore);
+ document.addEventListener('click',async e=>{const b=e.target.closest('[data-mid]');if(b)try{await call('medical.status',{medical_id:b.dataset.mid,status:b.dataset.status});await loadMedicals();msg('Medical status updated.')}catch(x){msg(x.message)}});
+ $('logout').onclick=()=>{call('logout').catch(()=>{});sessionStorage.removeItem('plusmedistock_token');sessionStorage.removeItem('plusmedistock_user');localStorage.removeItem('plusmedistock_token');localStorage.removeItem('plusmedistock_user');location.href='?page=login'};
+ if(!token){msg('Login token missing. Please sign in again.');return}
+ refresh().catch(e=>msg(e.message));
+ const hash=location.hash.replace('#','');if(hash&&$('page-'+hash))go(hash);
+})();
+</script>
+</body></html>
